@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Chatbot</title>
+    <link rel="stylesheet" href="../static/main.css">
+    <link rel="stylesheet" href="../static/fontawesome-all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1f2933;
+            color: #ffffff;
+        }
+
+        /* Chatbox Container */
+        .chatbox-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 100px);
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #2e3842;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Chatbox Header */
+        .chatbox-header {
+            padding: 15px;
+            background-color: #1d9bf0;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Chatbox Messages */
+        .chatbox {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* Message Styles */
+        .message {
+            display: flex;
+            align-items: flex-end;
+            margin: 10px 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #888;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .message.user .avatar {
+            background-color: #1d9bf0;
+        }
+
+        .message.bot .avatar {
+            background-color: #555;
+        }
+
+        .message-text {
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: #fff;
+            max-width: 60%;
+        }
+
+        .message.user .message-text {
+            background-color: #1d9bf0;
+        }
+
+        .message.bot .message-text {
+            background-color: #555;
+        }
+
+        .message-timestamp {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 5px;
+        }
+
+        /* Fade-In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #2e3842;
+            border-top: 1px solid #ccc;
+        }
+
+        .input-area input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+            background-color: #1f2933;
+            color: #fff;
+        }
+
+        .input-area input::placeholder {
+            color: #aaa;
+        }
+
+        .input-area button {
+            background-color: #1d9bf0;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .input-area button:hover {
+            background-color: #0d7cd6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chatbox-container">
+    <div class="chatbox-header">Chatbot</div>
+    <div class="chatbox" id="chatbox">
+        <!-- Example of a user message -->
+        {% if user_message %}
+            <div class="message user" aria-label="User message">
+                <div class="avatar">U</div>
+                <div>
+                    <div class="message-text">{{ user_message }}</div>
+                    <div class="message-timestamp">Just now</div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Example of a bot message -->
+        {% if bot_response %}
+            {% for user_msg, bot_msg in bot_response.items() %}
+                <!-- User Message -->
+                <div class="message user" aria-label="User message">
+                    <div class="avatar">U</div>
+                    <div>
+                        <div class="message-text">{{ user_msg }}</div>
+                        <div class="message-timestamp">Just now</div>
+                    </div>
+                </div>
+
+                <!-- Bot Response -->
+                <div class="message bot" aria-label="Bot response">
+                    <div class="avatar">B</div>
+                    <div>
+                        <div class="message-text">{{ bot_msg }}</div>
+                        <div class="message-timestamp">Just now</div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <form method="post" class="input-area" aria-label="Message input area">
+        <input type="text" name="message" id="user-message" placeholder="Type a message..." required aria-label="Your message">
+        <button type="submit" aria-label="Send message" id="send-btn">Send</button>
+    </form>
+</div>
+
+<script>
+    const chatbox = document.getElementById('chatbox');
+    const messageInput = document.getElementById('user-message');
+
+    // Automatically scroll to the bottom when a new message is added
+    function scrollToBottom() {
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    // Focus the input field when the page loads
+    window.onload = function() {
+        messageInput.focus();
+        scrollToBottom();
+    };
+
+    // Automatically scroll to the bottom when a new message is submitted
+    document.querySelector('form').addEventListener('submit', function() {
+        setTimeout(scrollToBottom, 50); // Slight delay to ensure the message is rendered before scrolling
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const chatbox = $('#chatbox');
+        const inputField = $('#user-message');
+
+        // Scroll to the bottom of the chatbox
+        function scrollToBottom() {
+            chatbox.scrollTop(chatbox.prop("scrollHeight"));
+        }
+
+        // Submit the form via AJAX
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+
+            const userMessage = inputField.val();
+            if (userMessage.trim() === "") return;
+
+            // Add the user message to the chatbox
+            chatbox.append(`
+                <div class="message user" aria-label="User message">
+                    <div class="avatar">U</div>
+                    <div>
+                        <div class="message-text">${userMessage}</div>
+                        <div class="message-timestamp">Just now</div>
+                    </div>
+                </div>
+            `);
+
+            inputField.val(''); // Clear the input field
+            scrollToBottom();
+
+            // Send the message to the server via AJAX
+            $.ajax({
+                url: '/chat/respond',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ message: userMessage }),
+                success: function (response) {
+                    // Add the bot response to the chatbox
+                    chatbox.append(`
+                        <div class="message bot" aria-label="Bot response">
+                            <div class="avatar">B</div>
+                            <div>
+                                <div class="message-text">${response.bot_response}</div>
+                                <div class="message-timestamp">Just now</div>
+                            </div>
+                        </div>
+                    `);
+                    scrollToBottom();
+                },
+                error: function () {
+                    chatbox.append(`
+                        <div class="message bot" aria-label="Error message">
+                            <div class="avatar">B</div>
+                            <div>
+                                <div class="message-text">Error: Unable to process your message.</div>
+                                <div class="message-timestamp">Just now</div>
+                            </div>
+                        </div>
+                    `);
+                    scrollToBottom();
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

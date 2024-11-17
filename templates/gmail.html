@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Page</title>
+    <link rel="stylesheet" href="../static/main.css">
+    <link rel="stylesheet" href="../static/fontawesome-all.min.css">
+    <style>
+        /* Page Container */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 100px);
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #2e3842;
+            border-radius: 8px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        /* Form Styles */
+        .form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .form-input,
+        .form-select {
+            height: 40px;
+        }
+
+        .form-textarea {
+            resize: none;
+            height: 300px;
+        }
+
+        .form-button {
+            background-color: #1d9bf0;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .form-button:hover {
+            background-color: #0d7cd6;
+        }
+
+        /* Send Button */
+        .send-button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .send-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="page-wrapper">
+        <div class="form-container">
+            <h2>Submit Your Details</h2>
+            <form id="submitForm" method="post" action="{{ url_for('gmail') }}" class="form" aria-label="Submission form">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" name="name" placeholder="Name" class="form-input" required
+                    aria-label="Your name" value="{{ user['Name'] }}">
+
+                <label for="toname" class="form-label">To Name</label>
+                <input type="text" id="toname" name="toname" placeholder="Name" class="form-input" required
+                    aria-label="Receiver's name" value="{{ user['Reciever'] }}">
+
+                <label for="email" class="form-label">To Email</label>
+                <input type="email" id="email" name="email" placeholder="To Add" class="form-input" required
+                    aria-label="Receiver's email" value="{{ user['ToAdd'] }}">
+
+                <label for="message" class="form-label">Message</label>
+                <textarea id="message" name="message" placeholder="Content should include receiver details, name, occupation, reason, and other info" class="form-textarea" required
+                    aria-label="Message">{{ user['Mail'] }}</textarea>
+
+                <label for="options" class="form-label">Choose an Option</label>
+                <select id="options" name="options" class="form-select" aria-label="Your choice">
+                    <option value="Formal" {% if user['Type'] == 'Formal' %}selected{% endif %}>Formal</option>
+                    <option value="Informal" {% if user['Type'] == 'Informal' %}selected{% endif %}>Informal</option>
+                    <option value="Specific" {% if user['Type'] == 'Specific' %}selected{% endif %}>Specific</option>
+                </select>
+                
+                <button type="submit" class="form-button" aria-label="Submit form" value="generate">Generate</button>
+                <button type="button" class="send-button" id="sendButton" aria-label="Send form" value="send">Send</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
