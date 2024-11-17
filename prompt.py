@@ -5,7 +5,7 @@ import os
 
 def api_call_mail(user):
     print(user)
-    prom = f'create an email from {user['Name']} ,recipient name is {user['Reciever']},data {user} in the form of {user['Type']} send back the email only with given information'
+    prom = f'create an email from {user["Name"]} ,recipient name is {user["Reciever"]},data {user} in the form of {user["Type"]} send back the email only with given information'
     my_api_key = 'AIzaSyA6CioVC1OUvPnljiaAywUnRvPNJDtSIzY'
     genai.configure(api_key=my_api_key)
     model = genai.GenerativeModel("gemini-1.5-flash")
